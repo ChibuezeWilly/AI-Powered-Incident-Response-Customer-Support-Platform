@@ -149,7 +149,7 @@ IMPORTANT:
 - Do NOT explain your answer.
 - Do NOT describe your reasoning.
 - Do NOT write a numbered list.
-- Do NOT write sentences before the JSON.
+- Do NOT write s before the JSON.
 - Do NOT write sentences after the JSON.
 - Do NOT return markdown.
 - Do NOT use ```json.

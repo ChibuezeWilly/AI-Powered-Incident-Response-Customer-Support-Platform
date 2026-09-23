@@ -35,6 +35,9 @@ const DEPARTMENTS = [
   "Technical Support",
 ];
 
+const isResolvedTicket = (ticket) =>
+  String(ticket?.status ?? "").trim().toUpperCase() === "RESOLVED";
+
 // Retry Helper Utility
 async function fetchWithRetry(fn, retries = 3, delay = 1000) {
   try {
@@ -749,8 +752,9 @@ export default function TicketsManager({
                                               ? "Retrying..."
                                               : "Retry Ticket",
                                         }),
-                                      (t.status === "AWAITING HUMAN REVIEW" ||
-                                        t.status === "PROCESSED")
+                                      !isResolvedTicket(t) &&
+                                        (t.status === "AWAITING HUMAN REVIEW" ||
+                                          t.status === "PROCESSED")
                                         ? _jsxs(React.Fragment, {
                                             children: [
                                             _jsx("button", {
@@ -949,6 +953,7 @@ export default function TicketsManager({
                                                 }),
                                               ],
                                             }),
+                                            !isResolvedTicket(t) &&
                                             (t.status ===
                                             "AWAITING HUMAN REVIEW" ||
                                               t.status === "PROCESSED") &&

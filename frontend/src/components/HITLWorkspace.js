@@ -35,6 +35,9 @@ const DEPARTMENTS = [
   "Technical Support",
 ];
 
+const isResolvedTicket = (ticket) =>
+  String(ticket?.status ?? "").trim().toUpperCase() === "RESOLVED";
+
 
 export default function HITLWorkspace({
   ticket: rawTicket,
@@ -116,6 +119,8 @@ export default function HITLWorkspace({
   };
 
   const handleEscalateJira = () => {
+    if (isResolvedTicket(ticket)) return;
+
     setSelectedAction("reject");
     setEscalatingJira(true);
   };
@@ -125,6 +130,8 @@ export default function HITLWorkspace({
   // ---------------------------------------------------------
 
   const handleApprove = () => {
+    if (isResolvedTicket(ticket)) return;
+
     setSelectedAction("approve");
     setApproveModalOpen(true);
   };
@@ -161,6 +168,8 @@ export default function HITLWorkspace({
   // ---------------------------------------------------------
 
   const handleEditAndSend = () => {
+    if (isResolvedTicket(ticket)) return;
+
     setSelectedAction("edit");
     setIsEditing(true);
     setEditModalText(editedSolution || ticket.aiRagSolution || "");
@@ -1965,6 +1974,7 @@ export default function HITLWorkspace({
                       role: "alert",
                       children: actionError,
                     }),
+                  !isResolvedTicket(ticket) &&
                   _jsxs(_Fragment, {
                         children: [
                           _jsx("button", {

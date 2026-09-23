@@ -3617,6 +3617,7 @@ const DEPARTMENTS = [
     "Service Outages and Maintenance",
     "Technical Support"
 ];
+const isResolvedTicket = (ticket)=>String(ticket?.status ?? "").trim().toUpperCase() === "RESOLVED";
 function HITLWorkspace({ ticket: rawTicket, onBack, onApprove, onReject, onDelete, theme, onOpenCustomer }) {
     _s();
     const ticket = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
@@ -3680,6 +3681,7 @@ function HITLWorkspace({ ticket: rawTicket, onBack, onApprove, onReject, onDelet
         }
     };
     const handleEscalateJira = ()=>{
+        if (isResolvedTicket(ticket)) return;
         setSelectedAction("reject");
         setEscalatingJira(true);
     };
@@ -3687,6 +3689,7 @@ function HITLWorkspace({ ticket: rawTicket, onBack, onApprove, onReject, onDelet
     // APPROVE MODAL
     // ---------------------------------------------------------
     const handleApprove = ()=>{
+        if (isResolvedTicket(ticket)) return;
         setSelectedAction("approve");
         setApproveModalOpen(true);
     };
@@ -3713,6 +3716,7 @@ function HITLWorkspace({ ticket: rawTicket, onBack, onApprove, onReject, onDelet
     // EDIT & SEND MODAL
     // ---------------------------------------------------------
     const handleEditAndSend = ()=>{
+        if (isResolvedTicket(ticket)) return;
         setSelectedAction("edit");
         setIsEditing(true);
         setEditModalText(editedSolution || ticket.aiRagSolution || "");
@@ -4841,7 +4845,7 @@ function HITLWorkspace({ ticket: rawTicket, onBack, onApprove, onReject, onDelet
                                         role: "alert",
                                         children: actionError
                                     }),
-                                    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxs"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                    !isResolvedTicket(ticket) && (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxs"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                         children: [
                                             (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsx"])("button", {
                                                 disabled: selectedAction !== null || actionBusy,
@@ -6703,6 +6707,7 @@ const DEPARTMENTS = [
     "Service Outages and Maintenance",
     "Technical Support"
 ];
+const isResolvedTicket = (ticket)=>String(ticket?.status ?? "").trim().toUpperCase() === "RESOLVED";
 // Retry Helper Utility
 async function fetchWithRetry(fn, retries = 3, delay = 1000) {
     try {
@@ -7297,7 +7302,7 @@ function TicketsManager({ tickets = [], onSelectTicket, theme = "dark", onOpenCu
                                                                     className: "rounded-lg bg-amber-600 hover:bg-amber-500 px-2.5 py-1 text-[10px] font-bold text-white flex items-center gap-1 transition-colors disabled:opacity-60",
                                                                     children: retryingTicketId === ticketId ? "Retrying..." : "Retry Ticket"
                                                                 }),
-                                                                t.status === "AWAITING HUMAN REVIEW" || t.status === "PROCESSED" ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxs"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].Fragment, {
+                                                                !isResolvedTicket(t) && (t.status === "AWAITING HUMAN REVIEW" || t.status === "PROCESSED") ? (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxs"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].Fragment, {
                                                                     children: [
                                                                         (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsx"])("button", {
                                                                             onClick: ()=>resolveTicket(t, false),
@@ -7483,7 +7488,7 @@ function TicketsManager({ tickets = [], onSelectTicket, theme = "dark", onOpenCu
                                                                                     })
                                                                                 ]
                                                                             }),
-                                                                            (t.status === "AWAITING HUMAN REVIEW" || t.status === "PROCESSED") && (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxs"])("button", {
+                                                                            !isResolvedTicket(t) && (t.status === "AWAITING HUMAN REVIEW" || t.status === "PROCESSED") && (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxs"])("button", {
                                                                                 onClick: ()=>resolveTicket(t, true),
                                                                                 className: "inline-flex items-center gap-1 rounded-md bg-indigo-600 hover:bg-indigo-500 px-3 py-1 text-xs font-semibold text-white transition-colors",
                                                                                 children: [
