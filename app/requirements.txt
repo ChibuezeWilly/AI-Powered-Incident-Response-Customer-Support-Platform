@@ -1,11 +1,12 @@
-﻿# Core Web & API Framework
+# Core Web & API Framework
 fastapi>=0.115.0
 uvicorn[standard]>=0.30.0
 python-multipart>=0.0.12
 
-# Data Validation & Settings
-pydantic>=2.9.0
+# Data Validation & Settings (Includes EmailStr validation)
+pydantic[email]>=2.9.0
 pydantic-settings>=2.5.0
+email-validator>=2.2.0
 
 # Database & Migrations
 sqlalchemy>=2.0.35
@@ -27,7 +28,7 @@ chromadb>=0.5.0
 rank-bm25>=0.2.2
 numpy>=1.26.0
 
-# Auth & Utilities
+# Auth, Security & HTTP
 python-dotenv>=1.0.1
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
