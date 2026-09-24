@@ -1,4 +1,4 @@
-# Core Web & API Framework
+﻿# Core Web & API Framework
 fastapi>=0.115.0
 uvicorn[standard]>=0.30.0
 python-multipart>=0.0.12
@@ -18,7 +18,7 @@ redis>=5.1.0
 arq>=0.26.0
 apscheduler>=3.10.4
 
-# Agentic Orchestration & Remote LLM/Cloud Inference
+# Agentic Orchestration & Remote Cloud Inference
 langgraph>=0.2.34
 langgraph-checkpoint-postgres>=2.0.0
 langchain-core>=0.3.0
