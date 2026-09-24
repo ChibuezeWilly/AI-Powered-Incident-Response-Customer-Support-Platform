@@ -25,6 +25,8 @@ from api.background_tasks.ticket_payloads import build_initial_graph_state
 
 from arq.connections import ArqRedis
 
+import re
+
 analyzer = None
 anonymizer = None
 
@@ -41,22 +43,32 @@ def _get_pii_tools():
 
 
 def sanitize_ticket_body(raw_body: str) -> str:
-    analyzer_engine, anonymizer_engine = _get_pii_tools()
-    results = analyzer_engine.analyze(
-        text=raw_body,
-        entities=[
-            "PHONE_NUMBER",
-            "EMAIL_ADDRESS",
-            "CREDIT_CARD",
-            "SECRET_KEY",
-            "IP_ADDRESS",
-            "URL",
-            "API keys",
-        ],
-        language="en",
-    )
-    sanitized = anonymizer_engine.anonymize(text=raw_body, analyzer_results=results)
-    return sanitized.text
+    if not raw_body:
+        return ""
+    try:
+        analyzer_engine, anonymizer_engine = _get_pii_tools()
+        results = analyzer_engine.analyze(
+            text=raw_body,
+            entities=[
+                "PHONE_NUMBER",
+                "EMAIL_ADDRESS",
+                "CREDIT_CARD",
+                "SECRET_KEY",
+                "IP_ADDRESS",
+                "URL",
+                "API keys",
+            ],
+            language="en",
+        )
+        sanitized = anonymizer_engine.anonymize(text=raw_body, analyzer_results=results)
+        return sanitized.text
+    except Exception:
+        # Fast, lightweight regex-based PII masking
+        text = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '<EMAIL_ADDRESS>', raw_body)
+        text = re.sub(r'\b(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b', '<PHONE_NUMBER>', text)
+        text = re.sub(r'\b(?:\d[ -]*?){13,16}\b', '<CREDIT_CARD>', text)
+        text = re.sub(r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b', '<IP_ADDRESS>', text)
+        return text
 
 
 router = APIRouter(prefix="/tickets", tags=["Tickets"])

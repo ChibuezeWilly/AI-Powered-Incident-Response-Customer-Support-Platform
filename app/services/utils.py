@@ -1,26 +1,37 @@
-from pwdlib import PasswordHash 
 from enum import Enum
 import re
 
-password_context = PasswordHash.recommended()
-def hash_password(password: str) -> str:
-    """Safely converts a plain text password into a secure cryptographic hash."""
-    password_bytes = password.encode("utf-8")
-    
-    truncated_bytes = password_bytes[:72]
-    
-    safe_password_str = truncated_bytes.decode("utf-8", errors="ignore")
-    
-    return password_context.hash(safe_password_str)
+try:
+    from pwdlib import PasswordHash
+    password_context = PasswordHash.recommended()
 
-def verify(plain_password: str, hashed_password: str) -> bool:
-    """Verifies a plain text password against a stored database hash."""
-    try:
-        return password_context.verify(plain_password, hashed_password)
-    except Exception:
-        return False
+    def hash_password(password: str) -> str:
+        """Safely converts a plain text password into a secure cryptographic hash."""
+        password_bytes = password.encode("utf-8")[:72]
+        safe_password_str = password_bytes.decode("utf-8", errors="ignore")
+        return password_context.hash(safe_password_str)
 
-from enum import Enum
+    def verify(plain_password: str, hashed_password: str) -> bool:
+        """Verifies a plain text password against a stored database hash."""
+        try:
+            return password_context.verify(plain_password, hashed_password)
+        except Exception:
+            return False
+except Exception:
+    import bcrypt
+
+    def hash_password(password: str) -> str:
+        """Safely converts a plain text password into a secure cryptographic hash using bcrypt."""
+        password_bytes = password.encode("utf-8")[:72]
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(password_bytes, salt).decode("utf-8")
+
+    def verify(plain_password: str, hashed_password: str) -> bool:
+        """Verifies a plain text password against a stored database hash using bcrypt."""
+        try:
+            return bcrypt.checkpw(plain_password.encode("utf-8")[:72], hashed_password.encode("utf-8"))
+        except Exception:
+            return False
 
 DEPARTMENT_TAGS = {
     "billing_and_payments": {
